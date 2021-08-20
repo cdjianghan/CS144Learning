@@ -11,6 +11,11 @@
 class ByteStream {
   private:
     // Your code here -- add private members as necessary.
+    std::string bytestream;
+    size_t cap;
+    size_t write_cnt;
+    size_t read_cnt;
+    bool end_eof;
 
     // Hint: This doesn't need to be a sophisticated data structure at
     // all, but if any of your tests are taking longer than a second,

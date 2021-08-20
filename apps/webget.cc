@@ -17,8 +17,21 @@ void get_URL(const string &host, const string &path) {
     // (not just one call to read() -- everything) until you reach
     // the "eof" (end of file).
 
-    cerr << "Function called: get_URL(" << host << ", " << path << ").\n";
-    cerr << "Warning: get_URL() has not been implemented yet.\n";
+    //(+)
+    //close-----关闭本进程的socket id，但链接还是开着的，用这个socket id的其它进程还能用这个链接，能读或写这个socket id
+    //shutdown--则破坏了socket 链接，读的时候可能侦探到EOF结束符，写的时候可能会收到一个SIGPIPE信号，这个信号可能直到
+    //socket buffer被填充了才收到，shutdown还有一个关闭方式的参数，0 不能再读，1不能再写，2 读写都不能。
+    // Your code here.
+    TCPSocket sk;
+    sk.connect(Address(host,"http"));
+    sk.write("GET "+path+" HTTP/1.1\r\nHOST: "+host+"\r\n\r\n");
+    string response;
+    while (sk.eof()==false)
+    {
+        response = sk.read();
+        cout<<response;
+    }
+    sk.close();
 }
 
 int main(int argc, char *argv[]) {
@@ -39,7 +52,6 @@ int main(int argc, char *argv[]) {
         // Get the command-line arguments.
         const string host = argv[1];
         const string path = argv[2];
-
         // Call the student-written function.
         get_URL(host, path);
     } catch (const exception &e) {
